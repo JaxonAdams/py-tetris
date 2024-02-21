@@ -6,6 +6,7 @@ import sys
 import pygame
 
 import settings as st
+from board import GameBoard
 
 
 class Game:
@@ -23,6 +24,10 @@ class Game:
 
         # set up clock for steady fps
         self.clock = pygame.time.Clock()
+
+        # set up game board
+        self.game_board = GameBoard()
+        print(self.game_board.board)
 
     def run(self):
         """Run the game. Set up a game loop and an event listener."""
