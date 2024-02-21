@@ -27,7 +27,6 @@ class Game:
 
         # set up game board
         self.game_board = GameBoard()
-        print(self.game_board.board)
 
     def run(self):
         """Run the game. Set up a game loop and an event listener."""
@@ -42,7 +41,9 @@ class Game:
                     sys.exit()
                 
             # fill in screen
-            self.screen.fill("BLACK")
+            self.screen.fill("STEELBLUE")
+            # run board logic
+            self.game_board.run()
             # update screen
             pygame.display.update()
             # update clock
