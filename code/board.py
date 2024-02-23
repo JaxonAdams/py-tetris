@@ -5,6 +5,7 @@ import pygame
 
 import settings as st
 from tile import Tile
+from tetromino import Tetromino
 
 
 class GameBoard:
@@ -19,14 +20,12 @@ class GameBoard:
         # create sprite group
         self.tile_sprites = pygame.sprite.Group()
 
-        # custom clock / cooldown setup
-        self.can_move = True
-        self.move_time = pygame.time.get_ticks()
-        self.move_duration = 1000
+        # new tetromino logic
+        self.can_create_tetromino = True
+        self.active_tetromino = None
         
         # set up game board
         self.board = self.generate_board()
-        self.create_board_sprites()
 
     def generate_board(self):
         """Create a new Tetris board."""
@@ -55,27 +54,26 @@ class GameBoard:
 
                 # border
                 Tile((x, y), [self.tile_sprites], border_surface)
+                
                 # tile
-                Tile((x, y) + border_offset, [self.tile_sprites])
+                if self.active_tetromino is not None and (col_i, row_i) == self.active_tetromino.pos:
+                    tetromino_surf = pygame.Surface((st.TILESIZE, st.TILESIZE))
+                    tetromino_surf.fill(self.active_tetromino.color)
 
-    def manage_tetromino_update_cooldown(self):
-        """Manage the active tetromino's update cooldown."""
-
-        current_time = pygame.time.get_ticks()
-
-        if self.can_move:
-            if (current_time - self.move_time
-                >= self.move_duration):
-                self.can_move = False
-                self.move_time = pygame.time.get_ticks()
-                print("Tick!")
+                    Tile((x, y) + border_offset, [self.tile_sprites], tetromino_surf)
+                else:
+                    Tile((x, y) + border_offset, [self.tile_sprites])
 
     def run(self):
         """Update and draw the board."""
 
-        self.manage_tetromino_update_cooldown()
-        if not self.can_move:
-            self.can_move = True
+        self.create_board_sprites()
+
+        if self.can_create_tetromino:
+            self.active_tetromino = Tetromino()
+            self.can_create_tetromino = False
+
+        self.active_tetromino.update()
 
         self.tile_sprites.draw(self.display_surface)
         self.tile_sprites.update()
