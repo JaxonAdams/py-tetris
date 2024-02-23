@@ -31,9 +31,9 @@ class GameBoard:
         """Create a new Tetris board."""
 
         board = []
-        for row_num in range(20):
+        for row_num in range(st.NUM_ROWS):
             row = []
-            for column_num in range(10):
+            for column_num in range(st.NUM_COLUMS):
                 row.append((column_num, row_num))
             board.append(row)
 
