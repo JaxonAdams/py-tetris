@@ -18,6 +18,11 @@ class GameBoard:
 
         # create sprite group
         self.tile_sprites = pygame.sprite.Group()
+
+        # custom clock / cooldown setup
+        self.can_move = True
+        self.move_time = pygame.time.get_ticks()
+        self.move_duration = 1000
         
         # set up game board
         self.board = self.generate_board()
@@ -53,8 +58,24 @@ class GameBoard:
                 # tile
                 Tile((x, y) + border_offset, [self.tile_sprites])
 
+    def manage_tetromino_update_cooldown(self):
+        """Manage the active tetromino's update cooldown."""
+
+        current_time = pygame.time.get_ticks()
+
+        if self.can_move:
+            if (current_time - self.move_time
+                >= self.move_duration):
+                self.can_move = False
+                self.move_time = pygame.time.get_ticks()
+                print("Tick!")
+
     def run(self):
         """Update and draw the board."""
+
+        self.manage_tetromino_update_cooldown()
+        if not self.can_move:
+            self.can_move = True
 
         self.tile_sprites.draw(self.display_surface)
         self.tile_sprites.update()
