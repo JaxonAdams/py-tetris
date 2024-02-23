@@ -9,15 +9,14 @@ import settings as st
 class Tetromino:
     """A collection of tiles which make up a single piece on the board."""
 
-    def __init__(self, pos=(4, 0)):
+    def __init__(self, first_pos, second_pos, third_pos, fourth_pos):
         """Handle all initialization logic for a new Tetromino."""
 
-        # tetromino position
-        self.pos = pos
-        self.x, self.y = pos
+        # tetromino tile positions
+        self.positions = [first_pos, second_pos, third_pos, fourth_pos]
 
         # misc. tetromino attributes
-        self.color = "Red"
+        self.color = "purple"
 
         # tetromino movement cooldown variables
         self.can_move = True
@@ -26,11 +25,10 @@ class Tetromino:
 
         self.has_reached_bottom = False
 
-    def update_y_pos(self, y_pos):
-        """Update the current y-position or row on the board."""
+    def update_y_pos(self, index, y_pos):
+        """Update the current y-positions or rows on the board."""
 
-        self.y = y_pos
-        self.pos = (self.x, self.y)
+        self.positions[index] = (self.positions[index][0], y_pos)
 
     def manage_cooldown(self):
         """Manage the current movement cooldown."""
@@ -43,14 +41,16 @@ class Tetromino:
                 self.can_move = False
                 self.move_time = pygame.time.get_ticks()
 
-                self.update_y_pos(self.y + 1)
+                for i in range(4):
+                    self.update_y_pos(i, self.positions[i][1] + 1)
 
     def manage_movable(self):
         """Manage whether or not this tetromino can be moved."""
 
-        if self.y == st.NUM_ROWS - 1:
-            self.has_reached_bottom = True
-        
+        for _, y_pos in self.positions:
+            if y_pos == st.NUM_ROWS - 1:
+                self.has_reached_bottom = True
+
         if not self.can_move:
             self.can_move = True
 

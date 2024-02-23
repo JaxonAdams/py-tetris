@@ -56,7 +56,7 @@ class GameBoard:
                 Tile((x, y), [self.tile_sprites], border_surface)
                 
                 # tile
-                if self.active_tetromino is not None and (col_i, row_i) == self.active_tetromino.pos:
+                if self.active_tetromino is not None and (col_i, row_i) in self.active_tetromino.positions:                 
                     tetromino_surf = pygame.Surface((st.TILESIZE, st.TILESIZE))
                     tetromino_surf.fill(self.active_tetromino.color)
 
@@ -70,7 +70,7 @@ class GameBoard:
         self.create_board_sprites()
 
         if self.can_create_tetromino:
-            self.active_tetromino = Tetromino()
+            self.active_tetromino = Tetromino((4, 1), (5, 1), (6, 1), (5, 0))
             self.can_create_tetromino = False
 
         self.active_tetromino.update()
