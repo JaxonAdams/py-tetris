@@ -60,7 +60,6 @@ class GameBoard:
                 
                 # tiles
 
-                # TODO: FIX ME
                 # static (not falling) tetrominos
                 if (col_i, row_i) in [pos for tet in self.static_tetrominos
                                           for pos in tet.positions]:
@@ -86,13 +85,12 @@ class GameBoard:
         self.create_board_sprites()
 
         if self.can_create_tetromino:
-            self.active_tetromino = Tetromino((4, 1), (5, 1), (6, 1), (5, 0))
+            self.active_tetromino = Tetromino((4, 1), (5, 1), (6, 1), (5, 0), self.static_tetrominos)
             self.can_create_tetromino = False
 
         if self.active_tetromino.is_falling == False:
             self.static_tetrominos.append(self.active_tetromino)
             self.can_create_tetromino = True
-            # print([tet.positions for tet in self.static_tetrominos])
 
         self.active_tetromino.update()
 

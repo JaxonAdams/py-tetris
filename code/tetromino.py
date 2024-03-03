@@ -9,11 +9,12 @@ import settings as st
 class Tetromino:
     """A collection of tiles which make up a single piece on the board."""
 
-    def __init__(self, first_pos, second_pos, third_pos, fourth_pos):
+    def __init__(self, first_pos, second_pos, third_pos, fourth_pos, static_tetrominos):
         """Handle all initialization logic for a new Tetromino."""
 
         # tetromino tile positions
         self.positions = [first_pos, second_pos, third_pos, fourth_pos]
+        self.static_tetrominos = static_tetrominos
 
         # misc. tetromino attributes
         self.color = "purple"
@@ -48,8 +49,13 @@ class Tetromino:
         """Manage whether or not this tetromino can be moved."""
 
         for _, y_pos in self.positions:
+            # reached bottom of screen
             if y_pos == st.NUM_ROWS - 1:
-                self.is_falling = False  # reached bottom of screen
+                self.is_falling = False
+            # hit a static tetromino
+            if y_pos in [(y_pos - 1) for tet in self.static_tetrominos
+                                     for _, y_pos in tet.positions]:
+                self.is_falling = False
 
         if not self.can_move:
             self.can_move = True
