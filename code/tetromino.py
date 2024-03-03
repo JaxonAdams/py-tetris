@@ -23,7 +23,7 @@ class Tetromino:
         self.move_time = pygame.time.get_ticks()
         self.move_duration = 800
 
-        self.has_reached_bottom = False
+        self.is_falling = True
 
     def update_y_pos(self, index, y_pos):
         """Update the current y-positions or rows on the board."""
@@ -49,7 +49,7 @@ class Tetromino:
 
         for _, y_pos in self.positions:
             if y_pos == st.NUM_ROWS - 1:
-                self.has_reached_bottom = True
+                self.is_falling = False  # reached bottom of screen
 
         if not self.can_move:
             self.can_move = True
@@ -59,6 +59,6 @@ class Tetromino:
         the board.
         """
 
-        if not self.has_reached_bottom:
+        if self.is_falling:
             self.manage_movable()
             self.manage_cooldown()

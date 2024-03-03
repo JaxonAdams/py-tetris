@@ -1,6 +1,8 @@
 """Contains all code needed to create and manage a Tetris board."""
 
 
+import sys
+
 import pygame
 
 import settings as st
@@ -23,6 +25,7 @@ class GameBoard:
         # new tetromino logic
         self.can_create_tetromino = True
         self.active_tetromino = None
+        self.static_tetrominos = []
         
         # set up game board
         self.board = self.generate_board()
@@ -55,12 +58,25 @@ class GameBoard:
                 # border
                 Tile((x, y), [self.tile_sprites], border_surface)
                 
-                # tile
-                if self.active_tetromino is not None and (col_i, row_i) in self.active_tetromino.positions:                 
+                # tiles
+
+                # TODO: FIX ME
+                # static (not falling) tetrominos
+                if (col_i, row_i) in [pos for tet in self.static_tetrominos
+                                          for pos in tet.positions]:
+                    for tetromino in self.static_tetrominos:
+                        if (col_i, row_i) in tetromino.positions:
+                            tetromino_surf = pygame.Surface((st.TILESIZE, st.TILESIZE))
+                            tetromino_surf.fill(tetromino.color)
+
+                            Tile((x, y) + border_offset, [self.tile_sprites], tetromino_surf)
+                # active (falling) tetromino
+                elif self.active_tetromino is not None and (col_i, row_i) in self.active_tetromino.positions:
                     tetromino_surf = pygame.Surface((st.TILESIZE, st.TILESIZE))
                     tetromino_surf.fill(self.active_tetromino.color)
 
                     Tile((x, y) + border_offset, [self.tile_sprites], tetromino_surf)
+                # blank tile
                 else:
                     Tile((x, y) + border_offset, [self.tile_sprites])
 
@@ -72,6 +88,11 @@ class GameBoard:
         if self.can_create_tetromino:
             self.active_tetromino = Tetromino((4, 1), (5, 1), (6, 1), (5, 0))
             self.can_create_tetromino = False
+
+        if self.active_tetromino.is_falling == False:
+            self.static_tetrominos.append(self.active_tetromino)
+            self.can_create_tetromino = True
+            # print([tet.positions for tet in self.static_tetrominos])
 
         self.active_tetromino.update()
 
